@@ -136,13 +136,22 @@ class EntityDataEnricher:
         
 
     def fetch_world_bank_data(self, entity_name, enriched_data):
-        """ Fetches country-related economic data from the World Bank API. """
+        """ Fetches document metadata from the World Bank API. """
         logging.info(f"Fetching data from World Bank for entity: {entity_name}")
         try:
-            response = requests.get(f"{self.data_sources['World Bank']}/{entity_name}?format=json")
+            params = {
+                "format": "json",
+                "qterm": entity_name,
+                "display_title": "water",
+                "fl": "display_title",
+                "rows": 20,
+                "os": 100
+            }
+            response = requests.get(self.data_sources["World Bank"], params=params)
             response.raise_for_status()
             enriched_data["World Bank"] = response.json()
             return True
         except requests.RequestException as e:
             logging.warning(f"Failed to retrieve World Bank data for {entity_name}: {e}")
             return False
+
