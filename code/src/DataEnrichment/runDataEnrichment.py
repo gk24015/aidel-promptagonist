@@ -18,7 +18,9 @@ def main():
     sanctions_pdf_path = "sdnlist.pdf"  # Update with the correct path
     enricher = EntityDataEnricher(sanctions_pdf_path)
 
-    entities = ["Tesla Inc."]  # Entities to enrich
+    #entities = ["Tesla Inc."]  # Entities to enrich
+    entities = ["23andMe Holding Co"]
+    
 
     results = []
     all_failed_apis = {}

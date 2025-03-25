@@ -10,14 +10,14 @@ class EntityDataEnricher:
     def __init__(self, sanctions_pdf_path):
         """ Initializes the class and loads the sanctions list from a PDF if not already loaded. """
         self.data_sources = {
-            "OpenCorporates": "https://api.opencorporates.com",
             "Wikidata": "https://www.wikidata.org/w/api.php",
             "SEC Tickers": "https://www.sec.gov/files/company_tickers.json",
             "SEC Data": "https://data.sec.gov",
             "World Bank": "https://api.worldbank.org/v2/country",
             "SEC Enforcement Actions": "https://api.sec-api.io/sec-enforcement-actions",
             "SEC Litigation Releases": "https://api.sec-api.io/sec-litigation-releases",
-            "SEC Form 8-K": "https://api.sec-api.io/form-8k"
+            "SEC Form 8-K": "https://api.sec-api.io/form-8k",
+            "SEC AAERs": "https://api.sec-api.io/aaers"  # Add new data source for AAERs
         }
         self.api_keys = [
             "0ef05ff990c13ce4d2ede57adc51c0eede0c77be53cad777e17d3cb74da7d7d7",
@@ -28,7 +28,7 @@ class EntityDataEnricher:
         self.ticker = None
         try:
             if EntityDataEnricher.sanctions_list is None:
-                EntityDataEnricher.sanctions_list = self._load_sanctions_list(sanctions_pdf_path)
+               #EntityDataEnricher.sanctions_list = self._load_sanctions_list(sanctions_pdf_path)
                 logging.info(f"Sanctions list loaded with {len(EntityDataEnricher.sanctions_list)} entries.")
         except Exception as e:
             logging.error(f"Error loading sanctions PDF: {e}")
@@ -54,10 +54,14 @@ class EntityDataEnricher:
         logging.info(f"Processing entity: {entity_name}")
         enriched_data = {
             "name": entity_name,
+            "cik" : "",
+            "ticker": "",
             "Sanctioned": "",  # Move "Sanctioned" to the top
             "SEC Enforcement Actions": "", 
             "SEC Litigation Releases": "",  # Add new field for SEC Litigation Releases
             "SEC Form 8-K": "",  # Add new field for SEC Form 8-K
+            "SEC AAERs": "",  # Add new field for SEC AAERs
+            "SEC Administrative Proceedings" : "",
             "Wikidata": "",
             "SEC EDGAR": "",  
             "SEC Facts": "",
@@ -66,20 +70,26 @@ class EntityDataEnricher:
         failed_apis = []
 
         self.cik = self._get_cik(entity_name)
-        self.ticker = self._get_ticker(entity_name)
+        enriched_data["cik"] = self.cik
         if not self.cik:
             logging.warning(f"No CIK found for {entity_name}")
             failed_apis.append("CIK")
-
-        if not self.ticker:
-            logging.warning(f"No ticker symbol found for {entity_name}")
-            failed_apis.append("Ticker")
-
-        if not self.fetch_wikidata(entity_name, enriched_data):
-            failed_apis.append("Wikidata")
+        else:
+            logging.info(f"CIK for {entity_name}: {self.cik}")
 
         if not self.fetch_sec_edgar(entity_name, enriched_data):
             failed_apis.append("SEC EDGAR")
+
+        self.ticker = self._get_ticker_from_edgar(enriched_data)
+        enriched_data["ticker"] = self.ticker
+        if not self.ticker:
+            logging.warning(f"No ticker symbol found for {entity_name}")
+            failed_apis.append("Ticker")
+        else:
+            logging.info(f"Ticker for {entity_name}: {self.ticker}")
+
+        if not self.fetch_wikidata(entity_name, enriched_data):
+            failed_apis.append("Wikidata")
 
         if not self.fetch_world_bank_data(entity_name, enriched_data):
             failed_apis.append("World Bank")
@@ -92,6 +102,12 @@ class EntityDataEnricher:
 
         if not self.fetch_sec_form_8k(entity_name, enriched_data):
             failed_apis.append("SEC Form 8-K")
+
+        if not self.fetch_sec_aaers(entity_name, enriched_data):
+            failed_apis.append("SEC AAERs")
+
+        if not self.fetch_sec_administrative_proceedings(entity_name, enriched_data):
+            failed_apis.append("SEC Administrative Proceedings")
 
         try:
             self.check_sanctions_list(entity_name, enriched_data)
@@ -168,19 +184,18 @@ class EntityDataEnricher:
             logging.warning(f"Failed to retrieve CIK for {entity_name}: {e}")
             return None
 
-    def _get_ticker(self, company_name):
-        """ Retrieves the stock ticker symbol using yfinance. """
+    def _get_ticker_from_edgar(self, enriched_data):
+        """ Retrieves the stock ticker symbol from SEC EDGAR data. """
         try:
-            ticker = yf.Ticker(company_name)
-            ticker_info = ticker.info
-            ticker_symbol = ticker_info.get('symbol', None)
-            if ticker_symbol:
-                return ticker_symbol
+            sec_edgar_data = enriched_data.get("SEC EDGAR", {})
+            tickers = sec_edgar_data.get("tickers", [])
+            if tickers:
+                return tickers[0]
             else:
-                logging.warning(f"Ticker symbol for '{company_name}' not found.")
+                logging.warning("Ticker symbol not found in SEC EDGAR data.")
                 return None
         except Exception as e:
-            logging.warning(f"Error retrieving ticker symbol for '{company_name}': {e}")
+            logging.warning(f"Error retrieving ticker symbol from SEC EDGAR data: {e}")
             return None
 
     def fetch_sec_enforcement_actions(self, entity_name, enriched_data):
@@ -252,6 +267,32 @@ class EntityDataEnricher:
 
         return False
 
+    def fetch_sec_aaers(self, entity_name, enriched_data):
+        """ Fetches data from SEC AAERs API. """
+        logging.info(f"Fetching SEC AAERs for entity: {entity_name}")
+
+        if not self.ticker:
+            return False
+
+        query = {
+            "query": f"entities.ticker:{self.ticker}",
+            "from": "0",
+            "size": "50",
+            "sort": [{"dateTime": {"order": "desc"}}]
+        }
+
+        for api_key in self.api_keys:
+            try:
+                response = requests.post(f"{self.data_sources['SEC AAERs']}?token={api_key}", json=query)
+                response.raise_for_status()
+                enriched_data["SEC AAERs"] = response.json()
+                logging.info(f"Data retrieved successfully from SEC AAERs for {entity_name}")
+                return True
+            except requests.RequestException as e:
+                logging.warning(f"Failed to retrieve SEC AAERs for {entity_name} with API key {api_key}: {e}")
+
+        return False
+
     def check_sanctions_list(self, entity_name, enriched_data):
         """ Checks if the entity is in the sanctions list using fuzzy matching. """
         logging.info(f"Checking OFAC Sanctions List for entity: {entity_name}")
@@ -285,3 +326,25 @@ class EntityDataEnricher:
         except requests.RequestException as e:
             logging.warning(f"Failed to retrieve World Bank data for {entity_name}: {e}")
             return False
+
+    def fetch_sec_administrative_proceedings(self, entity_name, enriched_data):
+        """ Fetches data from SEC Administrative Proceedings API. """
+        logging.info(f"Fetching SEC Administrative Proceedings for entity: {entity_name}")
+        query = {
+            "query": f"entities.ticker:{self.ticker}",
+            "from": 0,
+            "size": 50,
+            "sort": [{"releasedAt": {"order": "desc"}}]
+        }
+
+        for api_key in self.api_keys:
+            try:
+                response = requests.post(f"https://api.sec-api.io/sec-administrative-proceedings?token={api_key}", json=query)
+                response.raise_for_status()
+                enriched_data["SEC Administrative Proceedings"] = response.json()
+                logging.info(f"Data retrieved successfully from SEC Administrative Proceedings for {entity_name}")
+                return True
+            except requests.RequestException as e:
+                logging.warning(f"Failed to retrieve SEC Administrative Proceedings for {entity_name} with API key {api_key}: {e}")
+
+        return False
