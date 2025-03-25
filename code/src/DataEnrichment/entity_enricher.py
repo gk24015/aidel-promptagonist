@@ -10,7 +10,6 @@ class EntityDataEnricher:
     def __init__(self, sanctions_pdf_path):
         """ Initializes the class and loads the sanctions list from a PDF if not already loaded. """
         self.data_sources = {
-            "OpenCorporates": "https://api.opencorporates.com",
             "Wikidata": "https://www.wikidata.org/w/api.php",
             "SEC Tickers": "https://www.sec.gov/files/company_tickers.json",
             "SEC Data": "https://data.sec.gov",
@@ -28,7 +27,7 @@ class EntityDataEnricher:
         self.ticker = None
         try:
             if EntityDataEnricher.sanctions_list is None:
-                EntityDataEnricher.sanctions_list = self._load_sanctions_list(sanctions_pdf_path)
+               #EntityDataEnricher.sanctions_list = self._load_sanctions_list(sanctions_pdf_path)
                 logging.info(f"Sanctions list loaded with {len(EntityDataEnricher.sanctions_list)} entries.")
         except Exception as e:
             logging.error(f"Error loading sanctions PDF: {e}")
@@ -66,20 +65,24 @@ class EntityDataEnricher:
         failed_apis = []
 
         self.cik = self._get_cik(entity_name)
-        self.ticker = self._get_ticker(entity_name)
         if not self.cik:
             logging.warning(f"No CIK found for {entity_name}")
             failed_apis.append("CIK")
-
-        if not self.ticker:
-            logging.warning(f"No ticker symbol found for {entity_name}")
-            failed_apis.append("Ticker")
-
-        if not self.fetch_wikidata(entity_name, enriched_data):
-            failed_apis.append("Wikidata")
+        else:
+            logging.info(f"CIK for {entity_name}: {self.cik}")
 
         if not self.fetch_sec_edgar(entity_name, enriched_data):
             failed_apis.append("SEC EDGAR")
+
+        self.ticker = self._get_ticker_from_edgar(enriched_data)
+        if not self.ticker:
+            logging.warning(f"No ticker symbol found for {entity_name}")
+            failed_apis.append("Ticker")
+        else:
+            logging.info(f"Ticker for {entity_name}: {self.ticker}")
+
+        if not self.fetch_wikidata(entity_name, enriched_data):
+            failed_apis.append("Wikidata")
 
         if not self.fetch_world_bank_data(entity_name, enriched_data):
             failed_apis.append("World Bank")
@@ -168,19 +171,18 @@ class EntityDataEnricher:
             logging.warning(f"Failed to retrieve CIK for {entity_name}: {e}")
             return None
 
-    def _get_ticker(self, company_name):
-        """ Retrieves the stock ticker symbol using yfinance. """
+    def _get_ticker_from_edgar(self, enriched_data):
+        """ Retrieves the stock ticker symbol from SEC EDGAR data. """
         try:
-            ticker = yf.Ticker(company_name)
-            ticker_info = ticker.info
-            ticker_symbol = ticker_info.get('symbol', None)
-            if ticker_symbol:
-                return ticker_symbol
+            sec_edgar_data = enriched_data.get("SEC EDGAR", {})
+            tickers = sec_edgar_data.get("tickers", [])
+            if tickers:
+                return tickers[0]
             else:
-                logging.warning(f"Ticker symbol for '{company_name}' not found.")
+                logging.warning("Ticker symbol not found in SEC EDGAR data.")
                 return None
         except Exception as e:
-            logging.warning(f"Error retrieving ticker symbol for '{company_name}': {e}")
+            logging.warning(f"Error retrieving ticker symbol from SEC EDGAR data: {e}")
             return None
 
     def fetch_sec_enforcement_actions(self, entity_name, enriched_data):
