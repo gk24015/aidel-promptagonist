@@ -174,3 +174,7 @@ cython_debug/
 .pypirc
 history.txt
 code/src/DataEnrichment/history.txt
+
+
+# knowledge graph credentials
+src/.env
