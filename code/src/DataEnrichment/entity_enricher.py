@@ -41,7 +41,15 @@ class EntityDataEnricher:
     def enrich_entity(self, entity_name):
         """ Fetches data from various sources and checks against the sanctions list. """
         logging.info(f"Processing entity: {entity_name}")
-        enriched_data = {"name": entity_name, "Wikidata": "", "SEC EDGAR": "", "Sanctioned": ""}  # Ensure empty defaults
+        enriched_data = {
+            "name": entity_name,
+            "Sanctioned": "",  # Move "Sanctioned" to the top
+           
+            "Wikidata": "",
+            "SEC EDGAR": "",  
+            "SEC Facts": "",
+            "World Bank": "",         
+        }
         failed_apis = []
 
         if not self.fetch_wikidata(entity_name, enriched_data):
@@ -81,7 +89,6 @@ class EntityDataEnricher:
         logging.info(f"Checking SEC EDGAR filings for entity: {entity_name}")
 
         try:
-            # Fetch the list of companies and their CIKs
             response = requests.get(self.data_sources["SEC Tickers"], headers={"User-Agent": "EntityDataEnricher@gmail.com"})
             response.raise_for_status()
             company_data = response.json()
@@ -90,29 +97,38 @@ class EntityDataEnricher:
             
             for company in company_data.values():
                 score = fuzz.token_sort_ratio(entity_name.lower(), company["title"].lower())
-                if score > max_score and score > 80:  # Adjust threshold as needed
+                if score > max_score and score > 80:
                     max_score = score
-                    cik = str(company["cik_str"]).zfill(10)  # Ensure 10-digit CIK
+                    cik = str(company["cik_str"]).zfill(10)
 
             if not cik:
                 logging.warning(f"No CIK found for {entity_name}")
                 return False
 
-            # Fetch SEC data
             sec_data_url = f"{self.data_sources['SEC Data']}/submissions/CIK{cik}.json"
+            sec_facts_url = f"{self.data_sources['SEC Data']}/api/xbrl/companyfacts/CIK{cik}.json"
+
             sec_data_response = requests.get(sec_data_url, headers={"User-Agent": "EntityDataEnricher/1.0"})
+            sec_facts_response = requests.get(sec_facts_url, headers={"User-Agent": "EntityDataEnricher/1.0"})
             
-            if sec_data_response.status_code != 200:
-                logging.error(f"Failed to retrieve SEC EDGAR data for CIK {cik}. Response: {sec_data_response.status_code}, {sec_data_response.text}")
-                return False
+            if sec_data_response.status_code == 200:
+                sec_data_data = sec_data_response.json()
+                sec_data_data.pop("filings", None)  # Remove "filings" key if it exists
+                enriched_data["SEC EDGAR"] = sec_data_data  # Assign to the correct key
+            else:
+                logging.error(f"Failed to retrieve SEC EDGAR data for CIK {cik}.")
             
-            enriched_data["SEC EDGAR"] = sec_data_response.json()
-            #logging.info(f"SEC EDGAR data retrieved for CIK {cik}: {enriched_data['SEC EDGAR']}")
+            if sec_facts_response.status_code == 200:
+                sec_facts_data = sec_facts_response.json()
+                enriched_data["SEC Facts"] = sec_facts_data
+            else:
+                logging.warning(f"Failed to retrieve SEC Facts data for CIK {cik}.")
+                
             return True
         except requests.RequestException as e:
             logging.warning(f"Failed to retrieve SEC EDGAR filings for {entity_name}: {e}")
             return False
-
+        
     def check_sanctions_list(self, entity_name, enriched_data):
         """ Checks if the entity is in the sanctions list using fuzzy matching. """
         logging.info(f"Checking OFAC Sanctions List for entity: {entity_name}")
@@ -121,7 +137,7 @@ class EntityDataEnricher:
             for sanctioned_entity in EntityDataEnricher.sanctions_list:
                 match_score = fuzz.token_sort_ratio(entity_name.lower(), sanctioned_entity.lower())
 
-                if match_score > 80:  # Adjust threshold as needed
+                if match_score > 80:
                     enriched_data["Sanctioned"] = "Yes"
                     logging.info(f"Match found! {entity_name} is in the sanctions list (Score: {match_score}).")
                     return True
@@ -133,20 +149,12 @@ class EntityDataEnricher:
         except Exception as e:
             logging.error(f"Error during sanctions check: {e}")
             raise
-        
 
     def fetch_world_bank_data(self, entity_name, enriched_data):
         """ Fetches document metadata from the World Bank API. """
         logging.info(f"Fetching data from World Bank for entity: {entity_name}")
         try:
-            params = {
-                "format": "json",
-                "qterm": entity_name,
-                "display_title": "water",
-                "fl": "display_title",
-                "rows": 20,
-                "os": 100
-            }
+            params = {"format": "json", "qterm": entity_name, "display_title": "water", "fl": "display_title", "rows": 20, "os": 100}
             response = requests.get(self.data_sources["World Bank"], params=params)
             response.raise_for_status()
             enriched_data["World Bank"] = response.json()
@@ -154,4 +162,3 @@ class EntityDataEnricher:
         except requests.RequestException as e:
             logging.warning(f"Failed to retrieve World Bank data for {entity_name}: {e}")
             return False
-
