@@ -5,6 +5,29 @@ from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
+import requests
+
+# alphavantage api
+def get_ticker(company_name, api_key):
+    url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={company_name}&apikey={api_key}"
+    try:
+        response = requests.get(url).json()
+        return response['bestMatches'][0]['1. symbol'] if response.get('bestMatches') else None
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+    
+def get_news_sentiment(api_key, entity_name_symbol):
+    url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={entity_name_symbol}&apikey={api_key}"
+    try:
+        return requests.get(url).json()
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+# Example Usage
+
+
 
 def fetch_news_api(entity_name):
     api_key = os.getenv("News_API_api_key")
@@ -36,10 +59,20 @@ def fetch_entity_info(entity_name,entity_owner_name):
     }
     return results
 
+
+
+
 def main():
+    vonyage_free_api_key="HIKPE2YH9BY0F9YK"
     entity_name = input("Enter the entity name: ")
-    result = fetch_entity_info(entity_name)
-    print(result)
+    # result = fetch_entity_info(entity_name)
+    entity_name_symbol=get_ticker(entity_name,vonyage_free_api_key)
+    print(entity_name_symbol)
+    print(get_news_sentiment(vonyage_free_api_key,entity_name_symbol))
+    
+    # print(result)
+
+
 
 if __name__ == "__main__":
     main()
