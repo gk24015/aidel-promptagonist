@@ -16,6 +16,7 @@ The AI Risk-Driven Entity Analysis project focuses on assessing the credit risk 
 
 ## 🎥 Demo
 📹 [https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=drive_link](https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=sharing)
+    https://drive.google.com/file/d/1Bp1g2_A6fMdewBjsjC502-yB7tvWTjzU/view?usp=sharing
 🖼️ Screenshots: <img width="539" alt="image" src="https://github.com/user-attachments/assets/fd3f84c6-cd3d-41d4-8ed8-5260c417e7f5" />
 
 ## ⚙️ What It Does
