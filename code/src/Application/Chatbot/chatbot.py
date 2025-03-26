@@ -12,7 +12,7 @@ load_dotenv()
 
 client = OpenAI(
   base_url="https://openrouter.ai/api/v1",
-  api_key=os.getenv("OPENAI_API_KEY"),
+  api_key=os.getenv("OpenAI_api_key"),
 )
 
 def query_model(user_query, content):

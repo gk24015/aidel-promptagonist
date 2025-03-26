@@ -4,21 +4,22 @@ import re
 from openai import OpenAI
 from flask_cors import CORS
 from DataEnrichment.entity_enricher import EntityDataEnricher
-from Chatbot.chatbot import extract_and_query
+from Chatbot.chatbot import extract_and_query 
 from Chatbot.analysisChat import FinancialDataExtractor, append_to_file
 import json
 from itsdangerous import URLSafeTimedSerializer
 
 import os
-
+ 
+from Cyphers.Anomalies import *
 
 from flask import Flask, jsonify
-
+merge_info=[]
 app = Flask(__name__)
 custom_rules = []
 client = OpenAI(
   base_url="https://openrouter.ai/api/v1",
-  api_key=os.getenv("OpenAI_api_key"),
+  api_key="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",
 )
 
 # # Initial main balance
@@ -26,18 +27,17 @@ client = OpenAI(
 
 content=""
 def query_model(user_query, content):
-   
-    """Passes user query and email list to the model for classification."""
+    content=merge_info
+    print(content)
     messages = [
-        {"role": "system", "content": """You are a trained financial entity risk scorer, Based on user's query
-         and the content provided as context answer queries. Keep it brief.
+        {"role": "system", "content": """You are a trained financial research bot.Give concise answers with evidences
 
 """},
-        {"role": "user", "content": f"User Query: {user_query}\n\nEmails:\n{content}"}
+        {"role": "user", "content": f"User Query: {user_query}\n\Content:\n{content}"}
     ]
 
     completion = client.chat.completions.create(
-        model="google/gemma-3-27b-it:free",
+        model="deepseek/deepseek-chat-v3-0324:free",
         messages=messages
     )
     print(completion.choices[0].message.content)
@@ -52,7 +52,43 @@ def login():
 
 @app.route("/landing")
 def landing():
-    return render_template("landing.html",emails="")
+     
+    anomalies = {
+        "Circular Ownership": detect_circular_ownership(),
+        "Shell Companies": detect_shell_companies(),
+        "Hidden Beneficiaries": detect_hidden_beneficiaries(),
+        "High-Risk Transactions": detect_high_risk_transactions(),
+        "Multiple Directorships": detect_multiple_directorships(),
+        "PEP Association": detect_pep_association(),
+        "High-Risk Bank Association": detect_high_risk_bank_association()
+     }
+    return render_template("landing.html",anomalies=anomalies)
+    
+def test_query_model():
+    structured_data = """
+    Transaction ID: T001
+    Payer: Samsung Electronics Co., Ltd.
+    Receiver: Apple Inc.
+    Amount: 5,000,000 USD
+    Date: 2025-03-20
+    """
+
+    unstructured_data = """
+    On March 20, 2025, Microsoft Corporation completed a payment of 5 million USD to Amazon.com Inc. The transaction ID for this payment was T001.
+
+    Tesla Inc. transferred 11 million USD to Apple Inc. The transfer took place on March 25, 2025, with the transaction ID T002.
+
+    Additionally, Satya Nadella is listed as a director at Microsoft Corporation since 2014.
+    Tim Cook serves as a director at Apple Inc. since 2011.
+    """
+    delete_all_nodes()
+
+    print("Testing with Structured Data:")
+    structured_response = query_model1("Extract transaction details, Only respond with the requested data and nothing more", structured_data)
+    
+   
+    create_company_objects(structured_response)
+
 
 
 @app.route('/chatbot', methods=['POST'])
@@ -71,11 +107,11 @@ def chatbot():
     return jsonify({"response": bot_response})
 
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    data = request.get_json()
-    user_message = data.get('message', '')
-    return jsonify({"response": f"You said: {user_message}. This is a dummy response."})
+# @app.route('/chat', methods=['POST'])
+# def chat():
+#     data = request.get_json()
+#     user_message = data.get('message', '')
+#     return jsonify({"response": f"You said: {user_message}. This is a dummy response."})
 
 @app.route('/submit_rule', methods=['POST'])
 def submit_rule():
@@ -83,7 +119,7 @@ def submit_rule():
     rule = data.get('rule', '')
     if rule:
         custom_rules.append(rule)
-        determineRisk()
+        
         return jsonify({"message": "Rule added successfully!"}), 200
     return jsonify({"message": "Invalid rule!"}), 400
 
@@ -134,16 +170,23 @@ def upload_file():
             extractor = FinancialDataExtractor(entity)
 
             entity_info = extractor.extract_entity_info(entity)
+            print(type(entity_info))
             print("Entity info done")
             owner_info = extractor.extract_owner_info(entity)
             print("Owner info done")
+            merge_info=entity_info+owner_info
+            print(merge_info)
             shareholder_info = extractor.extract_shareholder_info(entity)
             shell_company_info = extractor.extract_shell_company_info(entity)
             subsidiary_info = extractor.subsidiary_company_info(entity)
             lawsuit_info = extractor.lawsuitInfo(entity)
             
+            
+            
+            print("Updated merge info",merge_info)
             # Get risk score using determineRisk
-            risk_response = extractor.determineRisk(
+            
+            risk_response = extractor.determineRisk(custom_rules,
                 entity_info,
                 owner_info,
                 shareholder_info,
@@ -166,25 +209,14 @@ def upload_file():
 
     return jsonify({"error": "Unsupported file format. Please use .txt files."}), 400
 
-def determineRisk( ):
-    user_query = f''' Hi
-    '''
 
-    if custom_rules:
-        user_query += "\nAdditional Custom Rules:\n" + "\n".join(custom_rules)
-
-    user_query += '''
-    Provide the output in the following format without any additional comments:
-    {
-        "Entity Risk ": "Low/Medium/High",
-        "Entity Risk Score": "Percentage between 0 to 100, low risk meaning 0-30 medium risk score can range 30-65 and above that would be high risk"
-        "Reason ": ["List key factors contributing to the risk in support of score"]
-    }
-    '''
 
     print(user_query)
 
 if __name__ == '__main__':
+    # test_query_model() 
+    
+    # visualize_graph();
     app.run(debug=True)
 
 
