@@ -113,6 +113,8 @@ After data extraction and analysis, structured data is modeled and stored in a *
 - Identifying patterns of potential fraud.  
 - Enhancing the understanding of interconnected data.  
 
+<img width="914" alt="image" src="https://github.com/user-attachments/assets/55b39d4f-794c-434a-a2ea-a720fe3432da" />
+
 ---
 
 ## Anomaly Detection Patterns
@@ -157,6 +159,7 @@ Web Scraping Limitations: Navigating restricted or protected websites for data e
 - 🔹 Backend: Flask, python/ LLM llama / 
 - 🔹 Database: Neo4j
 
+**Deployment** : https://quickstart-app-1050188241794.us-west2.run.app/
 
 ## Conclusion
 This structured approach enables comprehensive **credit risk assessment**, effective **anomaly detection**, and robust **financial risk mitigation**. It provides transparency, accuracy, and insightful analysis for financial institutions and regulatory bodies.
