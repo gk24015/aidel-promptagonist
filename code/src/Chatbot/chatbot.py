@@ -3,7 +3,6 @@ import requests
 app = Flask(__name__)
 import re
 from openai import OpenAI
-from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 import pandas as pd
@@ -13,13 +12,10 @@ load_dotenv()
 
 client = OpenAI(
   base_url="https://openrouter.ai/api/v1",
-  api_key=os.getenv("OpenAI_api_key"),
+  api_key=os.getenv("OPENAI_API_KEY"),
 )
 
 def query_model(user_query, content):
-
-    
-   
     """Passes user query and email list to the model for classification."""
     messages = [
         {"role": "system", "content": """You are an expert in financial data extraction. I have transaction data that may be in structured (tabular with columns) or unstructured (text with fields and descriptions) format. Your task is to convert the data into a structured JSON format.
@@ -72,6 +68,7 @@ Return "null" if any field is missing.
 
 Ensure the output is clean, with no redundant or irrelevant information.
 
+Ensure the output is valid JSON and does not contain duplicate entries or formatting markers like ```json.
 """},
         {"role": "user", "content": f"User Query: {user_query}\n\nContent:\n{content}"}
     ]
@@ -81,8 +78,6 @@ Ensure the output is clean, with no redundant or irrelevant information.
     )
     print(completion.choices[0].message.content)
     return completion.choices[0].message.content
-
-
 
 def extract_and_query(file_path, user_query):
     try:
@@ -123,8 +118,6 @@ def extract_excel(file_path):
         return "\n\n".join(content)
     except Exception as e:
         raise Exception(f"Error reading Excel file: {e}")
-
-    
 
 # Example Usage
 file_path = 'data.xlsx'
