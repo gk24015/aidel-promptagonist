@@ -25,130 +25,83 @@ The AI Risk-Driven Entity Analysis project focuses on assessing the credit risk 
 ## ⚙️ What It Does
 AI Risk-Driven Entity Analysis: Project Overview
 This project aims to assess credit risk and detect potential anomalies through advanced AI and data analytics. The process involves analyzing transaction files, extracting key entities, and applying techniques like fuzzy name matching and phonetic algorithms to identify discrepancies or fraudulent entities.
-
+________________________________________
 Data Extraction and Enrichment
 Relevant information about the entities is gathered through web scraping and data extraction techniques to enrich the dataset. Various features are analyzed, including:
-
-Entity-Level Features:
+•	Entity-Level Features:
 Information specific to individual entities, such as:
-
-Ownership
-
-Legal status
-
-Operational scope
-
-Transaction-Level Features:
+o	Ownership
+o	Legal status
+o	Operational scope
+•	Transaction-Level Features:
 Details about financial transactions like:
-
-Amounts
-
-Currencies
-
-Dates
-
-Transaction patterns
-
-External Data Features:
+o	Amounts
+o	Currencies
+o	Dates
+o	Transaction patterns
+•	External Data Features:
 Insights from external sources, such as:
-
-Market analysis
-
-Competitor insights
-
-Industry trends
-
-Network and Behavioral Features:
+o	Market analysis
+o	Competitor insights
+o	Industry trends
+•	Network and Behavioral Features:
 Analysis of network connections and behavioral patterns, such as:
-
-Frequent transactions between the same entities
-
-Patterns suggesting potential collusion
-
-Geographical and Regulatory Features:
+o	Frequent transactions between the same entities
+o	Patterns suggesting potential collusion
+•	Geographical and Regulatory Features:
 Information regarding:
-
-Geographic locations of entities
-
-Jurisdiction-based regulations
-
-Compliance data
-
-Anomaly Features:
+o	Geographic locations of entities
+o	Jurisdiction-based regulations
+o	Compliance data
+•	Anomaly Features:
 Detection of red flags and outliers, like:
-
-Unusual transaction amounts
-
-Atypical transaction frequency
-
-Suspicious behavior
-
+o	Unusual transaction amounts
+o	Atypical transaction frequency
+o	Suspicious behavior
+________________________________________
 Methods Used for Data Extraction:
-Fuzzy Name Matching: Identifies variations of company names like "Ltd." and "Limited."
-
-Language Detection: Handles entities with multilingual names.
-
-Phonetic Algorithms: Identifies phonetic similarities to detect potential fraud.
-
-Web Scraping: Retrieves insights from social media, reviews, and real-time news data.
-
-Risk Calculator: Dynamically adjusts risk scores based on extracted features.
-
+•	Fuzzy Name Matching: Identifies variations of company names like "Ltd." and "Limited."
+•	Language Detection: Handles entities with multilingual names.
+•	Phonetic Algorithms: Identifies phonetic similarities to detect potential fraud.
+•	Web Scraping: Retrieves insights from social media, reviews, and real-time news data.
+•	Risk Calculator: Dynamically adjusts risk scores based on extracted features.
+________________________________________
 Data Dumping and Transparency
 To enhance transparency and build trust, the results from each phase of data extraction and analysis are systematically dumped for the user. This allows stakeholders to:
-
-View intermediate results and understand each step of the analysis.
-
-Access the reasoning behind final risk scores and anomaly detection.
-
-Validate the data used for risk assessments, supporting compliance and audit requirements.
-
+•	View intermediate results and understand each step of the analysis.
+•	Access the reasoning behind final risk scores and anomaly detection.
+•	Validate the data used for risk assessments, supporting compliance and audit requirements.
 This approach ensures that the system is not a "black box" but a transparent and accountable solution for financial risk management.
-
+________________________________________
 Neo4j Knowledge Graph
 After data extraction and analysis, the structured data is sent to a model and stored in a Neo4j knowledge graph. The graph is optimized for:
-
-Detecting complex relationships and hidden connections.
-
-Identifying patterns of potential fraud.
-
-Enhancing the understanding of interconnected data.
-
+•	Detecting complex relationships and hidden connections.
+•	Identifying patterns of potential fraud.
+•	Enhancing the understanding of interconnected data.
+________________________________________
 Anomaly Detection Patterns
 Several anomaly detection patterns are applied to identify risks, including:
-
-High-Risk Bank Association
-
-PEP (Politically Exposed Persons) Association
-
-Multiple Directorships
-
-High-Risk Transactions
-
-Shell Companies
-
-Circular Ownership
-
+•	High-Risk Bank Association
+•	PEP (Politically Exposed Persons) Association
+•	Multiple Directorships
+•	High-Risk Transactions
+•	Shell Companies
+•	Circular Ownership
+________________________________________
 Dynamic Rule Engine: The USP
 The Dynamic Rule Engine is the core strength of this solution. It integrates:
-
-Structured relationships from the Neo4j knowledge graph
-
-Enriched external data from web scraping
-
+•	Structured relationships from the Neo4j knowledge graph
+•	Enriched external data from web scraping
 Using advanced AI-driven logic, the engine can:
-
-Cross-reference transaction patterns and entity behaviors.
-
-Detect hidden connections and fraudulent activities.
-
-Evaluate real-time risk scores dynamically.
-
-Provide data-driven feedback for informed decision-making.
-
+•	Cross-reference transaction patterns and entity behaviors.
+•	Detect hidden connections and fraudulent activities.
+•	Evaluate real-time risk scores dynamically.
+•	Provide data-driven feedback for informed decision-making.
 This combination of structured graph data and dynamic external intelligence makes the system highly adaptive, enhancing its reliability in identifying complex financial risks.
-
+________________________________________
 This structured approach enables comprehensive credit risk assessment, effective anomaly detection, and robust financial risk mitigation.
+
+
 
 ## 🛠️ How We Built It
 We built this solution using a combination of advanced AI techniques, data extraction microservices, and a Neo4j knowledge graph for structured relationship analysis. The system integrates dynamic web scraping, anomaly detection algorithms, and a rule engine to assess credit risk accurately.
