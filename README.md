@@ -15,7 +15,7 @@
 The AI Risk-Driven Entity Analysis project focuses on assessing the credit risk of companies by analyzing transaction data and identifying patterns among various entities involved. By leveraging advanced AI techniques and knowledge graph modeling, the system detects anomalies, evaluates complex ownership structures, and uncovers hidden connections between companies. This comprehensive analysis helps assess the financial stability and creditworthiness of organizations while providing valuable feedback to mitigate potential risks. The project's objective is to deliver accurate, data-driven insights to support effective decision-making in financial risk management.
 
 ## 🎥 Demo
-📹 
+📹 [https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=drive_link](https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=sharing)
 🖼️ Screenshots: <img width="539" alt="image" src="https://github.com/user-attachments/assets/fd3f84c6-cd3d-41d4-8ed8-5260c417e7f5" />
 
 
