@@ -18,7 +18,7 @@ app = Flask(__name__)
 custom_rules = []
 client = OpenAI(
   base_url="https://openrouter.ai/api/v1",
-  api_key="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",
+  api_key=os.getenv("OpenAI_api_key"),
 )
 
 # # Initial main balance
