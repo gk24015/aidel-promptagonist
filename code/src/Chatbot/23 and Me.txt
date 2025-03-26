@@ -1,0 +1,246 @@
+Financial Data Extraction Report
+Entity Name: 23 and Me
+
+Entity Information:
+{
+        "Extracted Entity": "TechCorp Ltd",
+        "Entity Type": "Technology",
+        "Entity Owner": "John Doe",
+        "Industry": "Software",
+        "Industry Risk": "Moderate",
+        "Market Cap": "1.2B USD",
+        "Revenue": "500M USD"
+    }
+
+Owner Information:
+{
+        "Owner's Profile": "Experienced Entrepreneur",
+        "Risk Score of Owner": "Low",
+        "Supporting Evidence": "No issues"
+    }
+
+Shareholder Information:
+{
+        "Shareholder Profile": [
+            {"Name": "Investor A", "Stake": "30%", "Risk Level": "Low"},
+            {"Name": "Investor B", "Stake": "20%", "Risk Level": "Medium"}
+        ],
+        "Risk": "Medium",
+        "Supporting Evidence": "Minor violation"
+    }
+
+Shell Company Information:
+{
+        "Shell Company": [
+            {"Name": "Global Ventures", "Location": "Cayman Islands"},
+            {"Name": "Offshore Holdings", "Location": "BVI"}
+        ],
+        "Risk": "High",
+        "Sentiments in News": "Negative",
+        "Supporting Evidence": "Tax evasion"
+    }
+
+Subsidiary Information:
+{
+        "Subsidiary": [
+            {"Name": "Tech Solutions", "Risk Level": "Low"},
+            {"Name": "InnovateX AI", "Risk Level": "Medium"}
+        ],
+        "Risk": "Low",
+        "Sentiments in News": "Positive",
+        "Supporting Evidence": "Product awards"
+    }
+
+Lawsuit Information:
+{
+        "Lawsuit": [
+            {"Case": "Patent Infringement", "Status": "Ongoing"},
+            {"Case": "Misconduct", "Status": "Settled"}
+        ],
+        "Criminal Activities": "None",
+        "Fraudulant Informations": "No fraud",
+        "Supporting Evidence": "Legal documents"
+    }
+
+==================================================
+
+Financial Data Extraction Report
+Entity Name: 23 and Me
+
+Entity Information:
+{
+        "Extracted Entity": "TechCorp Ltd",
+        "Entity Type": "Technology",
+        "Entity Owner": "John Doe",
+        "Industry": "Software",
+        "Industry Risk": "Moderate",
+        "Market Cap": "1.2B USD",
+        "Revenue": "500M USD"
+    }
+
+Owner Information:
+{
+        "Owner's Profile": "Experienced Entrepreneur",
+        "Risk Score of Owner": "Low",
+        "Supporting Evidence": "No issues"
+    }
+
+Shareholder Information:
+{
+        "Shareholder Profile": [
+            {"Name": "Investor A", "Stake": "30%", "Risk Level": "Low"},
+            {"Name": "Investor B", "Stake": "20%", "Risk Level": "Medium"}
+        ],
+        "Risk": "Medium",
+        "Supporting Evidence": "Minor violation"
+    }
+
+Shell Company Information:
+{
+        "Shell Company": [
+            {"Name": "Global Ventures", "Location": "Cayman Islands"},
+            {"Name": "Offshore Holdings", "Location": "BVI"}
+        ],
+        "Risk": "High",
+        "Sentiments in News": "Negative",
+        "Supporting Evidence": "Tax evasion"
+    }
+
+Subsidiary Information:
+{
+        "Subsidiary": [
+            {"Name": "Tech Solutions", "Risk Level": "Low"},
+            {"Name": "InnovateX AI", "Risk Level": "Medium"}
+        ],
+        "Risk": "Low",
+        "Sentiments in News": "Positive",
+        "Supporting Evidence": "Product awards"
+    }
+
+Lawsuit Information:
+{
+        "Lawsuit": [
+            {"Case": "Patent Infringement", "Status": "Ongoing"},
+            {"Case": "Misconduct", "Status": "Settled"}
+        ],
+        "Criminal Activities": "None",
+        "Fraudulant Informations": "No fraud",
+        "Supporting Evidence": "Legal documents"
+    }
+
+==================================================
+
+Financial Data Extraction Report
+Entity Name: 23 and Me
+
+Entity Information:
+```json
+{
+  "Extracted Entity": "23 and Me",
+  "Entity Type": "Biotechnology",
+  "Entity Owner": "Anne Wojcicki",
+  "Industry": "Genetic Testing and Biotechnology",
+  "Industry Risk": "Moderate",
+  "Market Cap": "Approx. $2.5 billion (as of 2023)",
+  "Revenue": "Approx. $272 million (2022)"
+}
+```
+
+Owner Information:
+Here’s the requested information for **23andMe** in the specified format:
+
+- **Owner's Profile**: Anne Wojcicki (Co-founder and former CEO) has no known fraud associations.  
+- **Risk Score of Owner**: Low risk; no known connections to political or criminal entities.  
+- **Supporting Evidence**: Anne Wojcicki has a clean public record with no legal or regulatory fraud allegations. She has been involved in legitimate biotech and healthcare ventures, including partnerships with pharmaceutical companies like GlaxoSmithKline (GSK).  
+
+Let me know if you'd like additional details or verification.
+
+Shareholder Information:
+Here is the requested data for "23 and Me" in the specified format:
+
+```json
+{
+  "Shareholder Profile": "Single entity ownership (Majority owned by Anne Wojcicki, co-founder and former CEO)",
+  "Risk": "Low to Moderate (Ownership is concentrated with the founder, which can lead to stability but also potential risks if the founder's decisions are overly dominant)",
+  "Supporting Evidence": "As a privately held company, 23 and Me does not have publicly traded shares. Anne Wojcicki remains a significant stakeholder after stepping down as CEO in 2024. The company's ownership structure is not highly diversified, relying on private investors and founders."
+}
+``` 
+
+(Note: If you need publicly traded company shareholder data, please provide a ticker symbol or confirm the company's status, as 23 and Me is private.)
+
+Shell Company Information:
+Here’s the structured data for "23 and Me" based on available information:
+
+```json
+{
+    "Shell Company": "No publicly known associated shell companies",
+    "Risk": [
+        "Data privacy concerns due to handling of genetic information",
+        "Regulatory scrutiny from agencies like the FDA",
+        "Potential misuse of genetic data by third parties"
+    ],
+    "Sentiments in News": [
+        "Negative sentiment due to recent data breach incidents (2023)",
+        "Mixed sentiment regarding the value of genetic testing services",
+        "Positive sentiment around advancements in personalized medicine"
+    ],
+    "Supporting Evidence": [
+        "2023 data breach exposed genetic data of millions of users (Source: FTC filings)",
+        "FDA warnings about health risk interpretations (Source: FDA press releases)",
+        "Partnerships with pharmaceutical companies raising privacy concerns (Source: Bloomberg reports)"
+    ]
+}
+```
+
+Subsidiary Information:
+Here’s the structured data for **23andMe** based on available information:
+
+```json
+{
+    "Subsidiary": ["23andMe Therapeutics", "Lemonaid Health"],
+    "Risk": [
+        "Data Privacy Concerns: 23andMe faced scrutiny over handling of genetic data and potential breaches.",
+        "Regulatory Risks: Compliance with healthcare regulations (e.g., FDA) for therapeutics and telemedicine (Lemonaid Health).",
+        "Reputation Risk: Past incidents of data misuse allegations could impact customer trust."
+    ],
+    "Sentiments in News": [
+        "Negative: Recent reports highlight ongoing data privacy lawsuits and regulatory challenges.",
+        "Neutral: Expansion of Lemonaid Health’s telemedicine services viewed as a growth opportunity.",
+        "Positive: Partnerships in drug development (e.g., GSK) for 23andMe Therapeutics generated optimistic coverage."
+    ],
+    "Supporting Evidence": [
+        "For Data Privacy: FTC settlement (2023) over alleged lax security practices (Source: FTC.gov).",
+        "For Regulatory Risks: FDA warnings on health reports accuracy (Source: FDA.gov, 2021).",
+        "For Sentiments: Bloomberg articles (2023) on therapeutics progress and TechCrunch coverage of Lemonaid’s expansion."
+    ]
+}
+```
+
+### Notes:
+- **Subsidiaries**: 23andMe Therapeutics focuses on drug discovery, while Lemonaid Health (acquired in 2021) offers telehealth services.  
+- **Risks**: Emphasis on data privacy due to the sensitive nature of genetic data.  
+- **Sentiments**: Mixed, with negative press around privacy but positive developments in therapeutics.  
+- **Evidence**: Sources include regulatory filings and credible news outlets.  
+
+Let me know if you’d like deeper analysis on any specific area!
+
+Lawsuit Information:
+Here is the requested information for **23andMe** in the specified format:
+
+```json
+{
+  "Lawsuit": "In November 2023, 23andMe faced multiple lawsuits following a data breach that exposed the genetic data of nearly 7 million users. The breach involved hackers accessing user profiles through credential stuffing and scraping sensitive information, including ancestry and health data. Several class-action lawsuits were filed alleging negligence in data security practices.",
+  "Criminal Activities": "No known criminal activities directly associated with 23andMe or its executives. However, the 2023 data breach raised concerns about potential misuse of stolen genetic data by third parties.",
+  "Fraudulent Information": "In 2021, the FDA issued a warning to 23andMe for marketing its health-related genetic tests without proper authorization, which the agency deemed misleading. The company resolved the issue by complying with regulatory requirements.",
+  "Supporting Evidence": [
+    "Data breach lawsuits: https://www.reuters.com/legal/litigation/23andme-faces-class-action-lawsuits-over-data-breach-2023-11-07/",
+    "FDA warning letter: https://www.fda.gov/media/152416/download",
+    "Credential-stuffing attack details: https://www.wired.com/story/23andme-breach-genetic-data-stolen/"
+  ]
+}
+```
+
+Let me know if you'd like additional details or updates.
+
+==================================================
+

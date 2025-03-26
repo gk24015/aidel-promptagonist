@@ -1,0 +1,21 @@
+Transaction Id: 123456
+Date: 2025-03-20
+Sender: John Doe
+Receiver: Alice Smith
+Amount: 500.00 USD
+Currency Exchange: USD to EUR
+Transaction Type: Wire Transfer
+Address: 123 Main St, NY
+Reference: Payment for Invoice #123
+Receiver Country: Germany
+
+Transaction Id: 789012
+Date: 2025-03-18
+Sender: Emily Clark
+Receiver: Michael Lee
+Amount: 1500.00 USD
+Currency Exchange: USD to GBP
+Transaction Type: Online Payment
+Address: 456 Elm St, LA
+Reference: Rent Payment
+Receiver Country: UK
