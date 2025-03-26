@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wells Fargo - Message Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 20px;
+            padding: 0;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #0c0c0c;
+            font-style: italic;
+        }
+
+        /* Modal Overlay Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Result Container Styling */
+        .result-container {
+            width: 90%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 90%;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+        }
+        body {
+            background: linear-gradient(to bottom, #f4f4f4, #e0e0e0);
+        }
+        .header {
+            background: #c8102e;
+            color: white;
+            padding: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: left;
+            padding-left: 20px;
+        }
+        .navbar {
+            background: #ffffff;
+            padding: 10px;
+            color: rgb(24, 22, 22);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        .container {
+            display: flex;
+            margin: 20px;
+        }
+        .sidebar {
+            width: 380px;
+            height: 400px;
+            background: white;
+            padding: 15px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .upload-btn, .rule-btn {
+            background-color: #c8102e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+        .upload-btn:hover, .rule-btn:hover {
+            background-color: #a00e25;
+        }
+        .message-area {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            margin-left: 20px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .message-list {
+            list-style: none;
+        }
+        .message-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .message-list li:hover {
+            background: #f1f1f1;
+        }
+        .message-content {
+            padding: 15px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .related-info {
+            margin-top: 20px;
+            background: #333;
+            color: white;
+            padding: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+        }
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .close-btn:hover {
+            color: #000;
+            cursor: pointer;
+        }
+        .modal textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        .step-container {
+            margin-top: 20px;
+        }
+        .step {
+            background: #f9f9f9;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #c8102e;
+            animation: fadeIn 0.5s ease-in-out forwards;
+            opacity: 0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">WELLS FARGO</div>
+    <div class="navbar">
+        <div>Accounts | Brokerage | Transfer & Pay | Plan & Learn | Security & Support</div>
+        <div>Welcome | Sign Off</div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <h3>Transaction Risk Evaluator</h3>
+            <ul class="message-list">
+                {% for email in emails %}
+                    <li onclick="viewEmail('{{ email.id }}')">{{ email.subject }}</li>
+                {% endfor %}
+            </ul>
+            <button class="upload-btn" onclick="document.getElementById('file-upload').click()">Upload Document</button>
+            <input type="file" id="file-upload" style="display: none;"/>
+            <button class="rule-btn" onclick="openModal()">Customize Rule Engine</button>
+            
+            
+        </div>
+        <div class="message-area">
+            <h3 id="email-subject">Analysis Dashboard</h3>
+            <button class="rule-btn" onclick="openModal1()">Neo4j Analysis</button>
+            <div class="message-content" id="email-body">
+                <p>Creating the Analysis, may take sometime.......</p>
+            </div>
+        </div>
+    </div>
+    <div class="related-info">Related Information</div>
+
+    <div class="modal" id="ruleModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3>Customize Rule Engine</h3>
+            <textarea id="ruleInput" placeholder="Enter your rule here..." style="width: 363px;height: 62px;padding: 10px;"></textarea>
+            <button class="upload-btn" onclick="submitRule()">Submit</button>
+        </div>
+    </div>
+    <div class="modal" id="resultModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal1()">&times;</span>
+
+            <!-- Anomaly Detection Results -->
+            <h1>Anomaly Detection Results</h1>
+            <div class="result-container">
+                {% for anomaly_name, (has_results, data) in anomalies.items() %}
+                    <h2>{{ anomaly_name }}</h2>
+                    {% if has_results %}
+                        <table>
+                            <tr>
+                                {% for key in data[0].keys() %}
+                                    <th>{{ key }}</th>
+                                {% endfor %}
+                            </tr>
+                            {% for record in data %}
+                                <tr>
+                                    {% for value in record.values() %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% else %}
+                        <p>Not Detected</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <img src="F:\Development\TechnologyHackathon\aidel-promptagonist\code\src\Application\templates\static\graph_visualization.png">
+        </div>
+    </div>
+    <script>
+
+
+ document.getElementById('file-upload').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    if (Array.isArray(data) && data.length > 0) {
+                const result = data[0]; // Access the first result
+                const analysisHTML = `
+                   
+                    <p><b>Confidence Score:</b> ${result['Confidence Score']}</p>
+                    <p><b>Entity Type:</b> ${result['Payer Entity']}</p>
+                    <p><b>Entity Type:</b> ${result['Receiver Entity']}</p>
+                    <p><b>Extracted Entity:</b> ${result['Extracted Entity']}</p>
+                    <p><b>Risk Score:</b> ${result['Risk Score']}</p>
+                    <p><b>Transaction ID:</b> ${result['Transaction ID']}</p>
+                    <h3>Reason:</h3>
+                    <ul>${result.Reason.map(r => `<li>${r}</li>`).join('')}</ul>
+                `;
+                document.getElementById('email-body').innerHTML = analysisHTML;
+            } 
+
+                    // document.getElementById('email-body').innerHTML = `<h2>Analysis Result</h2><p>${data}</p>`;
+                })
+                .catch(error => {
+                    document.getElementById('email-body').innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+                });
+            }
+        });
+function submitRule() {
+    const ruleText = document.getElementById('ruleInput').value;
+    
+    fetch('/submit_rule', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rule: ruleText }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Rule Submitted: ' + data.message);
+        closeModal();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+        function viewEmail(emailId) {
+            fetch('/email/' + emailId)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('email-body').innerHTML = 
+                        `<h2>${data.subject}</h2><p>${data.content.replace(/\n/g, '<br>')}</p>`;
+                });
+        }
+
+        function openModal() {
+            document.getElementById('ruleModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('ruleModal').style.display = 'none';
+        }
+        function openModal1() {
+            document.getElementById('resultModal').style.display = 'flex';
+        }
+
+        function closeModal1() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('resultModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+        
+    </script>
+
+    {% include 'chatbot.html' %}
+</body>
+</html>

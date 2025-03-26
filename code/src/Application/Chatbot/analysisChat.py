@@ -84,7 +84,7 @@ class FinancialDataExtractor:
     
         return self.query_model(user_query, content)
 
-    def determineRisk(self, entity_info, owner_info, shareholder_info, shell_company_info, subsidiary_info, lawsuit_info):
+    def determineRisk(self,custom_rules, entity_info, owner_info, shareholder_info, shell_company_info, subsidiary_info, lawsuit_info):
         user_query = f'''You are an expert in financial risk assessment. Based on the following information, provide a risk evaluation for the entity:
 
         Entity Information:
@@ -115,15 +115,18 @@ class FinancialDataExtractor:
         Provide the output in the following format without any additional comments:
         {{
             "Transaction ID": "{self.entity['TransactionId']}",
-            "Extracted Entity": "{self.entity['Payer Name']} and {self.entity['Receiver Name']}",
+            "Payer Entity": "{self.entity['Payer Name']} 
+            "Receiver Entity":" {self.entity['Receiver Name']}",
             "Entity Type": "{entity_info}",
+            "Fradulant Activity":"{lawsuit_info}",
             "Risk Score": "Percentage between 0 to 100, low risk meaning 0-30 medium risk score can range 30-65 and above that would be high risk",
-            "Supporting Evidence": "{lawsuit_info}",
             "Confidence Score": "High",
             "Reason": ["List key factors contributing to the risk in support of score"]
         }}
         '''
-        
+        if custom_rules:
+         user_query += "\nAdditional Custom Rules:\n" + "\n".join(custom_rules)
+         print("Custom Rules appended",user_query)
         return self.query_model(user_query, "")
 
 def append_to_file(entity_name, entity_info, owner_info, shareholder_info, shell_company_info, subsidiary_info, lawsuit_info, risk_response):

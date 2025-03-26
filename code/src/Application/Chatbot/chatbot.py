@@ -12,7 +12,7 @@ load_dotenv()
 
 client = OpenAI(
   base_url="https://openrouter.ai/api/v1",
-  api_key=os.getenv("OPENAI_API_KEY"),
+  api_key=os.getenv("OpenAI_api_key"),
 )
 
 def query_model(user_query, content):
@@ -119,8 +119,3 @@ def extract_excel(file_path):
     except Exception as e:
         raise Exception(f"Error reading Excel file: {e}")
 
-# Example Usage
-file_path = 'data.xlsx'
-user_query = "Extract structured JSON data from this transaction information."
-result = extract_and_query(file_path, user_query)
-print(result)

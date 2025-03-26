@@ -1,0 +1,158 @@
+<div>
+    <!-- Chatbot Button -->
+    <button class="chatbot-button" onclick="toggleChat()">Chat</button>
+
+    <!-- Chatbot Window -->
+    <div class="chatbot-window" id="chatbot">
+        <div id="reminder-container"></div>
+        <div class="chatbot-header">Chat with us</div>
+        <div class="chatbot-messages" id="chatbot-messages"></div>
+        <div class="chatbot-input">
+            <input type="text" id="chatbot-input" placeholder="Type or say something">
+            <button onclick="sendMessage()">&#10148;</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Floating Chatbot Button */
+    .chatbot-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #7D4E96;
+        color: white;
+        padding: 12px 18px;
+        border-radius: 30px;
+        width: "60%";
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    /* Chatbot Window */
+    .chatbot-window {
+        display: none;
+        position: fixed;
+        bottom: 70px;
+        right: 20px;
+        width: 500px;
+        background: linear-gradient(145deg, #7D4E96, #b791ca);
+        color: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Chat Header */
+    .chatbot-header {
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    /* Chat Messages */
+    .chatbot-messages {
+        height: 350px;
+        overflow-y: auto;
+        background: white;
+        color: black;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    /* Chat Input */
+    .chatbot-input {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        height:40px;
+        background: white;
+        border-radius: 20px;
+        padding: 10px;
+    }
+
+    .chatbot-input input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        color: #030303;
+    }
+
+    .chatbot-input button {
+        background: transparent;
+        border: none;
+        font-size: 24px;
+        color: #7D4E96;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    function toggleChat() {
+        const chatWindow = document.getElementById("chatbot");
+        chatWindow.style.display = (chatWindow.style.display === "none" || chatWindow.style.display === "") ? "block" : "none";
+    }
+    function hideReminder() {
+        document.getElementById("reminder-container").innerHTML = ""; // Remove the reminder tab
+    }
+
+    async function fetchReminder() {
+        const response = await fetch("/getReminder"); // API to check reminders
+        const data = await response.json();
+        
+        if (data.show_reminder) {
+           
+        }
+    }
+    async function sendMessage() {
+        const inputField = document.getElementById("chatbot-input");
+        const message = inputField.value.trim();
+        if (!message) return;
+
+        const chatBox = document.getElementById("chatbot-messages");
+
+        // Display user message
+        const userMessage = document.createElement("div");
+        userMessage.style.color = "black";
+        userMessage.style.marginBottom = "5px";
+        userMessage.innerHTML = `<strong>You: </strong>`+message
+        chatBox.appendChild(userMessage);
+
+        // Send message to backend
+        const response = await fetch("/chatbot", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+        
+        // Display bot response
+        const botMessage = document.createElement("div");
+        botMessage.style.color = "black";
+        botMessage.style.marginBottom = "10px";
+        botMessage.innerHTML = `<strong>Bot:</strong>` + 
+    data.response.split("\n").map(line => `<p>${line}</p>`).join("");
+        chatBox.appendChild(botMessage);
+        if(data.show_reminder)
+        {
+        console.log("true")
+            const reminderHTML = `
+                <div class="reminder-tab" id="reminder-tab">
+                    <p id="reminder-message">🔔 ${data.reminder_text || "You have a new reminder!"}</p>
+                    <button onclick="hideReminder()">Dismiss</button>
+                </div>
+            `;
+            document.getElementById("reminder-container").innerHTML = reminderHTML;
+            document.getElementById("reminder-tab").style.display = "block";
+        }
+        // Scroll to latest message
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Clear input field
+        inputField.value = "";
+    }
+</script>

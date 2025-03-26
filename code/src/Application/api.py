@@ -20,7 +20,7 @@ initial_enricher = EntityDataEnricher(SANCTIONS_PDF_PATH)
 
 @app.route('/')
 def index():
-    return render_template('upload.html')
+    return render_template('login.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
