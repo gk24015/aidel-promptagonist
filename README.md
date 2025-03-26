@@ -1,4 +1,9 @@
 # 🚀 Project Name
+![image](https://github.com/user-attachments/assets/1d6fb095-fb24-4fc9-a2b3-14e2d8a88dbe)
+
+![image](https://github.com/user-attachments/assets/107735cd-b971-4b90-bade-67651ec67970)
+
+
 
 ## 📌 Table of Contents
 - [Introduction](#introduction)
@@ -14,6 +19,22 @@
 ## 🎯 Introduction
 The AI Risk-Driven Entity Analysis project focuses on assessing the credit risk of companies by analyzing transaction data and identifying patterns among various entities involved. By leveraging advanced AI techniques and knowledge graph modeling, the system detects anomalies, evaluates complex ownership structures, and uncovers hidden connections between companies. This comprehensive analysis helps assess the financial stability and creditworthiness of organizations while providing valuable feedback to mitigate potential risks. The project's objective is to deliver accurate, data-driven insights to support effective decision-making in financial risk management.
 
+![image](https://github.com/user-attachments/assets/3bdd3e68-d09c-47d7-9e32-bbc5349cbf6d)
+
+## 🎥 Demo
+📹 [https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=drive_link](https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=sharing)
+🖼️ Screenshots: <img width="539" alt="image" src="https://github.com/user-attachments/assets/fd3f84c6-cd3d-41d4-8ed8-5260c417e7f5" />
+
+## ⚙️ What It Does
+# AI Risk-Driven Entity Analysis: Project Overview
+This project aims to assess **credit risk** and detect potential **anomalies** through advanced AI and data analytics. The system analyzes transaction files, extracts key entities, and applies techniques like **fuzzy name matching** and **phonetic algorithms** to identify discrepancies or fraudulent entities.
+
+---
+
+## Data Extraction and Enrichment
+Relevant information about the entities is gathered through **web scraping** and data extraction techniques to enrich the dataset. Various features analyzed include:
+
+
 ## 🎥 Demo
 📹 [https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=drive_link](https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=sharing)
     https://drive.google.com/file/d/1Bp1g2_A6fMdewBjsjC502-yB7tvWTjzU/view?usp=sharing
@@ -27,6 +48,7 @@ This project aims to assess **credit risk** and detect potential **anomalies** t
 
 ## Data Extraction and Enrichment
 Relevant information about the entities is gathered through **web scraping** and data extraction techniques to enrich the dataset. Various features analyzed include:
+
 
 - **Entity-Level Features:**  
   Information specific to individual entities, such as:  
@@ -105,6 +127,11 @@ The system applies multiple anomaly detection patterns to identify risks, includ
 ---
 
 ## Dynamic Rule Engine: The USP
+
+
+![image](https://github.com/user-attachments/assets/72255768-7a7e-4baa-adf8-816d3100c2ed)
+
+
 The **Dynamic Rule Engine** is the solution's core strength, combining:
 - Structured relationships from the **Neo4j knowledge graph**  
 - Enriched external data from **web scraping**  
