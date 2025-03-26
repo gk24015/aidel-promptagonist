@@ -17,7 +17,7 @@
 
 ---
 ## 🎥 Demo
-🔗 [Live Demo](#) (https://quickstart-app3-1050188241794.us-west2.run.app/landing) 
+🔗 [Live Demo](#)  - https://quickstart-app3-1050188241794.us-west2.run.app/landing  
 Use the chatbot and the upload document to uplaod a txt file
 
 ## 🎯 Introduction
