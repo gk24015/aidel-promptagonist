@@ -28,7 +28,7 @@ class EntityDataEnricher:
         self.ticker = None
         try:
             if EntityDataEnricher.sanctions_list is None:
-               #EntityDataEnricher.sanctions_list = self._load_sanctions_list(sanctions_pdf_path)
+                EntityDataEnricher.sanctions_list = self._load_sanctions_list(sanctions_pdf_path)
                 logging.info(f"Sanctions list loaded with {len(EntityDataEnricher.sanctions_list)} entries.")
         except Exception as e:
             logging.error(f"Error loading sanctions PDF: {e}")

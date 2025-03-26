@@ -2,25 +2,25 @@ from flask import Flask, request, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
-from IPython.display import Image, display
-from langgraph.graph import Graph
+# from IPython.display import Image, display
+# from langgraph.graph import Graph
 
 # Load environment variables
 load_dotenv()
 
 class FinancialDataExtractor:
-    def __init__(self, entity_name):
-        self.entity_name = entity_name
+    def __init__(self, entity):
+        self.entity = entity
         self.client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
-            api_key=os.getenv("OpenAI_api_key"),
+            api_key=os.getenv("OPENAI_API_KEY"),
         )
         # self.workflow = Graph()
         # self.setup_workflow()
 
     def query_model(self, user_query, content):
         messages = [
-            {"role": "system", "content": "You are an expert in financial data extraction. Donot include Disclaimers at end of your response"},
+            {"role": "system", "content": "You are an expert in financial data extraction. Do not include Disclaimers at end of your response"},
             {"role": "user", "content": f"User Query: {user_query}\n\nContent:\n{content}"}
         ]
         completion = self.client.chat.completions.create(
@@ -30,20 +30,20 @@ class FinancialDataExtractor:
         return completion.choices[0].message.content
 
     def extract_entity_info(self, content):
-        user_query = '''Given the company name Return me the data in this format:Only respond with the requested data and nothing more
-            "Extracted Entity": The name of the company in query,
+        user_query = '''Given the transaction details, return the data in this format:
+            "Extracted Entity": The name of the payer and receiver,
             "Entity Type": Industry type,
             "Entity Owner": Owner name,
-            "Industry": the industry the company is asscoiated with,
+            "Industry": the industry the entities are associated with,
             "Industry Risk": is the industry risky and have more chances of frauds
-            "Market Cap": the market capital of company
-            "Revenue": the revenue of company
+            "Market Cap": the market capital of entities
+            "Revenue": the revenue of entities
             '''
             
         return self.query_model(user_query, content)
 
     def extract_owner_info(self, content):
-        user_query = '''Given the company name Return me the data in this format:
+        user_query = '''Given the transaction details, return the data in this format:
             "Owner's Profile": Owner's fraud associations,
             "Risk Score of Owner": Risk level, is the owner connected to any political criminal entity?
             "Supporting Evidence": Supporting evidence'''
@@ -51,7 +51,7 @@ class FinancialDataExtractor:
         return self.query_model(user_query, content)
 
     def extract_shareholder_info(self, content):
-        user_query = '''Given the company name Return me the data in this format:
+        user_query = '''Given the transaction details, return the data in this format:
             "Shareholder Profile": Shareholders if any,
             "Risk": Risk level of shareholders,
             "Supporting Evidence": Supporting evidence.
@@ -59,7 +59,7 @@ class FinancialDataExtractor:
         return self.query_model(user_query, content)
 
     def extract_shell_company_info(self, content):
-        user_query = '''Given the company Name: Return me the data in this format:
+        user_query = '''Given the transaction details, return the data in this format:
             "Shell Company": Associated shell companies,
             "Risk": Associated risks,
             "Sentiments in News": Recent sentiment changes,
@@ -67,7 +67,7 @@ class FinancialDataExtractor:
         return self.query_model(user_query, content)
 
     def subsidiary_company_info(self, content):
-        user_query = '''Given the company Name: Return me the data in this format:
+        user_query = '''Given the transaction details, return the data in this format:
             "Subsidiary": Subsidiary companies,
             "Risk": Associated risks with any subsidiaries,
             "Sentiments in News": Recent sentiment changes for subsidiaries,
@@ -75,14 +75,15 @@ class FinancialDataExtractor:
         return self.query_model(user_query, content)
     
     def lawsuitInfo(self,content):
-        user_query= '''Given the company Name: Return me the data in this format: 
+        user_query= '''Given the transaction details, return the data in this format: 
             "Lawsuit": any lawsuit informations available,
-            "Criminal Activities": criminal activities associated with the company/ company owner,
-            "Fraudulant Informations": Recent fraud news related to company,
+            "Criminal Activities": criminal activities associated with the entities,
+            "Fraudulant Informations": Recent fraud news related to entities,
             "Supporting Evidence": Supporting evidence.'''
     
     
         return self.query_model(user_query, content)
+
     def determineRisk(self, entity_info, owner_info, shareholder_info, shell_company_info, subsidiary_info, lawsuit_info):
         user_query = f'''You are an expert in financial risk assessment. Based on the following information, provide a risk evaluation for the entity:
 
@@ -113,19 +114,21 @@ class FinancialDataExtractor:
 
         Provide the output in the following format without any additional comments:
         {{
-            "Entity Risk ": "Low/Medium/High",
-            "Entity Risk Score": "Percentage between 0 to 100, low risk meaning 0-30 medium risk score can range 30-65 and above that would be high risk"
-            "Reason ": ["List key factors contributing to the risk in support of score"]
+            "Transaction ID": "{self.entity['TransactionId']}",
+            "Extracted Entity": "{self.entity['Payer Name']} and {self.entity['Receiver Name']}",
+            "Entity Type": "{entity_info}",
+            "Risk Score": "Percentage between 0 to 100, low risk meaning 0-30 medium risk score can range 30-65 and above that would be high risk",
+            "Supporting Evidence": "{lawsuit_info}",
+            "Confidence Score": "High",
+            "Reason": ["List key factors contributing to the risk in support of score"]
         }}
         '''
         
         return self.query_model(user_query, "")
 
-
-def append_to_file(entity_name,entity_info, owner_info, shareholder_info, shell_company_info, subsidiary_info, lawsuit_info):
-
-     filename = f"F:\\Development\\TechnologyHackathon\\aidel-promptagonist\\code\\src\\Chatbot\\{entity_name}.txt"
-     with open(filename, 'w', encoding='utf-8') as file:
+def append_to_file(entity_name, entity_info, owner_info, shareholder_info, shell_company_info, subsidiary_info, lawsuit_info, risk_response):
+    filename = f"F:\\Development\\TechnologyHackathon\\aidel-promptagonist\\code\\src\\Chatbot\\{entity_name}.txt"
+    with open(filename, 'w', encoding='utf-8') as file:
         file.write("Financial Data Extraction Report\n")
         file.write(f"Entity Name: {entity_name}\n\n")
         
@@ -147,25 +150,76 @@ def append_to_file(entity_name,entity_info, owner_info, shareholder_info, shell_
         file.write("Lawsuit Information:\n")
         file.write(lawsuit_info + "\n\n")
         
+        file.write("Risk Assessment:\n")
+        file.write(risk_response + "\n\n")
+        
         file.write("=" * 50 + "\n\n")
     
-     print(f"Data appended to {filename}")
+    print(f"Data appended to {filename}")
 
 if __name__ == "__main__":
-    extractor = FinancialDataExtractor("23 and Me")
+    entity = {
+        "TransactionId": "123456",
+        "Payer Name": "John Doe",
+        "Receiver Name": "Alice Smith",
+        "Date": "2025-03-20",
+        "Amount": 500.0,
+        "Currency Exchange": "USD to EUR",
+        "Transaction Type": "Wire Transfer",
+        "Address": "123 Main St, NY",
+        "Reference": "Payment for Invoice #123",
+        "Receiver Country": "Germany"
+    }
 
-    # Call the method with entity_name or any content
-    entity_info = extractor.extract_entity_info(extractor.entity_name)
+    extractor = FinancialDataExtractor(entity)
+
+    # Call the method with entity or any content
+    entity_info = extractor.extract_entity_info(entity)
     print("Entity_info done")
-    owner_info=extractor.extract_owner_info(extractor.entity_name)
-    print("Entity_info done")
-    shareholder_info=extractor.extract_shareholder_info(extractor.entity_name)
-    print("Entity_info done")
-    shell_company_info=extractor.extract_shell_company_info(extractor.entity_name)
-    print("Entity_info done")
-    subsidiary_info=extractor.subsidiary_company_info(extractor.entity_name)
-    print("Entity_info done")
-    lawsuit_info=extractor.lawsuitInfo(extractor.entity_name)
+    owner_info = extractor.extract_owner_info(entity)
+    print("Owner_info done")
+    shareholder_info = extractor.extract_shareholder_info(entity)
+    print("Shareholder_info done")
+    shell_company_info = extractor.extract_shell_company_info(entity)
+    print("Shell_company_info done")
+    subsidiary_info = extractor.subsidiary_company_info(entity)
+    print("Subsidiary_info done")
+    lawsuit_info = extractor.lawsuitInfo(entity)
+    print("Lawsuit_info done")
+
+    risk_response = extractor.determineRisk(
+        entity_info,
+        owner_info,
+        shareholder_info,
+        shell_company_info,
+        subsidiary_info,
+        lawsuit_info
+    )
+    print("Risk assessment done")
+
+    # Print the response
+    print({
+        "entity_info": entity_info,
+        "owner_info": owner_info,
+        "shareholder_info": shareholder_info,
+        "shell_company_info": shell_company_info,
+        "subsidiary_info": subsidiary_info,
+        "lawsuit_info": lawsuit_info,
+        "risk_response": risk_response
+    })
+
+    # Append to file
+    append_to_file(
+        entity["Payer Name"],
+        entity_info,
+        owner_info,
+        shareholder_info,
+        shell_company_info,
+        subsidiary_info,
+        lawsuit_info,
+        risk_response
+    )
+
     # entity_info = '''{
     #     "Extracted Entity": "TechCorp Ltd",
     #     "Entity Type": "Technology",
@@ -224,16 +278,16 @@ if __name__ == "__main__":
     # print("Entity_info done")
     # print("determining risk")
 
-    risk_response=extractor.determineRisk(entity_info, owner_info, shareholder_info, shell_company_info, subsidiary_info, lawsuit_info)
-    print(risk_response)
-    # Print the response
-    append_to_file(
-        extractor.entity_name,
-        entity_info,
-        owner_info,
-        shareholder_info,
-        shell_company_info,
-        subsidiary_info,
-        lawsuit_info
-    )
+    # risk_response = extractor.determineRisk(entity_info, owner_info, shareholder_info, shell_company_info, subsidiary_info, lawsuit_info)
+    # print(risk_response)
+    # # Print the response
+    # append_to_file(
+    #     extractor.entity_name,
+    #     entity_info,
+    #     owner_info,
+    #     shareholder_info,
+    #     shell_company_info,
+    #     subsidiary_info,
+    #     lawsuit_info
+    # )
 

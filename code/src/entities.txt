@@ -1,0 +1,56 @@
+Transaction Details
+Transaction 1
+Transaction ID: TXN-87456392
+
+Date: March 26, 2025
+
+Amount: $12,750.00
+
+Currency: USD
+
+Payment Method: ACH Transfer
+
+Payer Details:
+Company Name: Acme Tech Solutions, Inc.
+
+Address: 500 Silicon Avenue, San Francisco, CA 94105
+
+Contact: finance@acmetech.com
+
+Receiver Details:
+Company Name: Quantum Supplies LLC
+
+Address: 212 Industrial Park Road, Austin, TX 78758
+
+Contact: billing@quantumsupplies.com
+
+Transaction Description:
+Payment for Q1 software licensing and cloud infrastructure services.
+
+Transaction 2
+Transaction ID: TXN-98541237
+
+Date: March 26, 2025
+
+Amount: $8,950.00
+
+Currency: USD
+
+Payment Method: Wire Transfer
+
+Payer Details:
+Company Name: Orion Manufacturing Co.
+
+Address: 789 Industrial Drive, Chicago, IL 60601
+
+Contact: accounts@orionmfg.com
+
+Receiver Details:
+Company Name: Stellar Logistics Inc.
+
+Address: 4100 Freight Avenue, Houston, TX 77002
+
+Contact: payments@stellarlogistics.com
+
+Transaction Description:
+Payment for freight shipping and logistics services for Q1 supply chain operations.
