@@ -26,7 +26,7 @@ The AI Risk-Driven Entity Analysis project focuses on assessing the credit risk 
 ![image](https://github.com/user-attachments/assets/3bdd3e68-d09c-47d7-9e32-bbc5349cbf6d)
 
 ## 🎥 Demo
-📹 [https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=drive_link](https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=sharing)
+📹 https://drive.google.com/file/d/1Oh7ukILnhuYhLOmIJpma6fVKlfzN6ExI/view?usp=drive_link
 🖼️ Screenshots: <img width="539" alt="image" src="https://github.com/user-attachments/assets/fd3f84c6-cd3d-41d4-8ed8-5260c417e7f5" />
 
 ## ⚙️ What It Does
@@ -38,11 +38,6 @@ This project aims to assess **credit risk** and detect potential **anomalies** t
 ## Data Extraction and Enrichment
 Relevant information about the entities is gathered through **web scraping** and data extraction techniques to enrich the dataset. Various features analyzed include:
 
-
-## 🎥 Demo
-📹 [https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=drive_link](https://drive.google.com/file/d/1EHSUP4vIRQ1e9wA5dbGH9OXcb_cTc5Pr/view?usp=sharing)
-    https://drive.google.com/file/d/1Bp1g2_A6fMdewBjsjC502-yB7tvWTjzU/view?usp=sharing
-🖼️ Screenshots: <img width="539" alt="image" src="https://github.com/user-attachments/assets/fd3f84c6-cd3d-41d4-8ed8-5260c417e7f5" />
 
 ## ⚙️ What It Does
 # AI Risk-Driven Entity Analysis: Project Overview
