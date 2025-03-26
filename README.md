@@ -58,3 +58,7 @@ Describe the major technical or non-technical challenges your team encountered.
 ## 👥 Team
 - **Your Name** - [GitHub](#) | [LinkedIn](#)
 - **Teammate 2** - [GitHub](#) | [LinkedIn](#)
+
+Services :
+Knowledge Graph - This project utilizes a knowledge graph to extract, store, and analyze information about companies, their owners, and transactions. By organizing interconnected data, the graph helps detect potential anomalies, such as circular ownership, shell companies, hidden beneficiaries, and high-risk transactions. The aim is to provide a deeper understanding of the relationships between entities, revealing hidden patterns and insights that traditional data models may miss.
+
