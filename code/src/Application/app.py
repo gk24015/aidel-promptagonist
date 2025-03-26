@@ -1,26 +1,91 @@
-from flask import Flask, request, jsonify, render_template
-import os
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+
+import re
+from openai import OpenAI
+from flask_cors import CORS
 from DataEnrichment.entity_enricher import EntityDataEnricher
 from Chatbot.chatbot import extract_and_query
 from Chatbot.analysisChat import FinancialDataExtractor, append_to_file
 import json
 from itsdangerous import URLSafeTimedSerializer
 
-app = Flask(__name__, template_folder='templates', static_folder='static')
+import os
 
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
 
-# Path to the sanctions PDF
-SANCTIONS_PDF_PATH = os.path.join(os.path.dirname(__file__), 'sdnlist.pdf')
+from flask import Flask, jsonify
 
-# Initialize the EntityDataEnricher with the sanctions list when the app starts
-initial_enricher = EntityDataEnricher(SANCTIONS_PDF_PATH)
+app = Flask(__name__)
+custom_rules = []
+client = OpenAI(
+  base_url="https://openrouter.ai/api/v1",
+  api_key="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",
+)
 
-@app.route('/')
-def index():
-    return render_template('upload.html')
+# # Initial main balance
+# main_balance = 20000.00
+
+content=""
+def query_model(user_query, content):
+   
+    """Passes user query and email list to the model for classification."""
+    messages = [
+        {"role": "system", "content": """You are a trained financial entity risk scorer, Based on user's query
+         and the content provided as context answer queries. Keep it brief.
+
+"""},
+        {"role": "user", "content": f"User Query: {user_query}\n\nEmails:\n{content}"}
+    ]
+
+    completion = client.chat.completions.create(
+        model="google/gemma-3-27b-it:free",
+        messages=messages
+    )
+    print(completion.choices[0].message.content)
+    return completion.choices[0].message.content
+
+@app.route("/", methods=["GET", "POST"])
+def login():
+    print("Entered here")
+    if request.method == "POST":
+        return redirect(url_for("landing"))
+    return render_template("login.html")
+
+@app.route("/landing")
+def landing():
+    return render_template("landing.html",emails="")
+
+
+@app.route('/chatbot', methods=['POST'])
+def chatbot():
+    user_message = request.json.get("message", "").lower()
+
+    # Dummy response logic
+    if "hello" in user_message:
+        bot_response = "Hello! How can I assist you today?"
+    
+    
+    else:
+        response = query_model(user_message, content)
+        return jsonify({"response": response})
+
+    return jsonify({"response": bot_response})
+
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.get_json()
+    user_message = data.get('message', '')
+    return jsonify({"response": f"You said: {user_message}. This is a dummy response."})
+
+@app.route('/submit_rule', methods=['POST'])
+def submit_rule():
+    data = request.get_json()
+    rule = data.get('rule', '')
+    if rule:
+        custom_rules.append(rule)
+        determineRisk()
+        return jsonify({"message": "Rule added successfully!"}), 200
+    return jsonify({"message": "Invalid rule!"}), 400
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -60,15 +125,18 @@ def upload_file():
                     entity[key] = None
 
         risk_scores = []
-
+        print("Entities are ", entity)
         for entity in extracted_entities:
             payer_name = entity.get("Payer Name")
             receiver_name = entity.get("Receiver Name")
 
             # Process the entire entity using FinancialDataExtractor
             extractor = FinancialDataExtractor(entity)
+
             entity_info = extractor.extract_entity_info(entity)
+            print("Entity info done")
             owner_info = extractor.extract_owner_info(entity)
+            print("Owner info done")
             shareholder_info = extractor.extract_shareholder_info(entity)
             shell_company_info = extractor.extract_shell_company_info(entity)
             subsidiary_info = extractor.subsidiary_company_info(entity)
@@ -98,6 +166,25 @@ def upload_file():
 
     return jsonify({"error": "Unsupported file format. Please use .txt files."}), 400
 
+def determineRisk( ):
+    user_query = f''' Hi
+    '''
+
+    if custom_rules:
+        user_query += "\nAdditional Custom Rules:\n" + "\n".join(custom_rules)
+
+    user_query += '''
+    Provide the output in the following format without any additional comments:
+    {
+        "Entity Risk ": "Low/Medium/High",
+        "Entity Risk Score": "Percentage between 0 to 100, low risk meaning 0-30 medium risk score can range 30-65 and above that would be high risk"
+        "Reason ": ["List key factors contributing to the risk in support of score"]
+    }
+    '''
+
+    print(user_query)
+
 if __name__ == '__main__':
     app.run(debug=True)
+
 

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wells Fargo - Message Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: linear-gradient(to bottom, #f4f4f4, #e0e0e0);
+        }
+        .header {
+            background: #c8102e;
+            color: white;
+            padding: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: left;
+            padding-left: 20px;
+        }
+        .navbar {
+            background: #ffffff;
+            padding: 10px;
+            color: rgb(24, 22, 22);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        .container {
+            display: flex;
+            margin: 20px;
+        }
+        .sidebar {
+            width: 380px;
+            height: 400px;
+            background: white;
+            padding: 15px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .upload-btn, .rule-btn {
+            background-color: #c8102e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+        .upload-btn:hover, .rule-btn:hover {
+            background-color: #a00e25;
+        }
+        .message-area {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            margin-left: 20px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .message-list {
+            list-style: none;
+        }
+        .message-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .message-list li:hover {
+            background: #f1f1f1;
+        }
+        .message-content {
+            padding: 15px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .related-info {
+            margin-top: 20px;
+            background: #333;
+            color: white;
+            padding: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+        }
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .close-btn:hover {
+            color: #000;
+            cursor: pointer;
+        }
+        .modal textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">WELLS FARGO</div>
+    <div class="navbar">
+        <div>Accounts | Brokerage | Transfer & Pay | Plan & Learn | Security & Support</div>
+        <div>Welcome | Sign Off</div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <h3>Transaction Risk Evaluator</h3>
+            <ul class="message-list">
+                {% for email in emails %}
+                    <li onclick="viewEmail('{{ email.id }}')">{{ email.subject }}</li>
+                {% endfor %}
+            </ul>
+            <button class="upload-btn" onclick="document.getElementById('file-upload').click()">Upload Document</button>
+            <input type="file" id="file-upload" style="display: none;"/>
+            <button class="rule-btn" onclick="openModal()">Customize Rule Engine</button>
+        </div>
+        <div class="message-area">
+            <h3 id="email-subject">Analysis Dashboard</h3>
+            <div class="message-content" id="email-body">
+                <p>Click on an email to view its content.</p>
+            </div>
+        </div>
+    </div>
+    <div class="related-info">Related Information: Manage Alerts</div>
+
+    <div class="modal" id="ruleModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3>Customize Rule Engine</h3>
+            <textarea id="ruleInput" placeholder="Enter your rule here..." style="width: 363px;height: 62px;padding: 10px;"></textarea>
+            <button class="upload-btn" onclick="submitRule()">Submit</button>
+        </div>
+    </div>
+
+    <script>
+ document.getElementById('file-upload').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    if (Array.isArray(data) && data.length > 0) {
+                const result = data[0]; // Access the first result
+                const analysisHTML = `
+                    <h2>Analysis Result</h2>
+                    <p><b>Confidence Score:</b> ${result['Confidence Score']}</p>
+                    <p><b>Entity Type:</b> ${result['Entity Type']}</p>
+                    <p><b>Extracted Entity:</b> ${result['Extracted Entity']}</p>
+                    <p><b>Risk Score:</b> ${result['Risk Score']}</p>
+                    <p><b>Transaction ID:</b> ${result['Transaction ID']}</p>
+                    <h3>Reason:</h3>
+                    <ul>${result.Reason.map(r => `<li>${r}</li>`).join('')}</ul>
+                `;
+                document.getElementById('email-body').innerHTML = analysisHTML;
+            } 
+
+                    // document.getElementById('email-body').innerHTML = `<h2>Analysis Result</h2><p>${data}</p>`;
+                })
+                .catch(error => {
+                    document.getElementById('email-body').innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+                });
+            }
+        });
+function submitRule() {
+    const ruleText = document.getElementById('ruleInput').value;
+    
+    fetch('/submit_rule', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rule: ruleText }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Rule Submitted: ' + data.message);
+        closeModal();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+        function viewEmail(emailId) {
+            fetch('/email/' + emailId)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('email-body').innerHTML = 
+                        `<h2>${data.subject}</h2><p>${data.content.replace(/\n/g, '<br>')}</p>`;
+                });
+        }
+
+        function openModal() {
+            document.getElementById('ruleModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('ruleModal').style.display = 'none';
+        }
+
+        
+    </script>
+
+    {% include 'chatbot.html' %}
+</body>
+</html>

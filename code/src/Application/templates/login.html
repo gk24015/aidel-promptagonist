@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wells Fargo - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            
+            background-size: cover;
+            text-align: left;
+        }
+        .header {
+            background: #c8102e;
+            color: white;
+            padding: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: left;
+            padding-left: 20px;
+        }
+        .login-container {
+            background: white;
+            width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: normal;
+        }
+        .subtext {
+            font-size: 14px;
+            color: gray;
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 14px;
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .input-container {
+            position: relative;
+        }
+        .icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: gray;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .checkbox-container input {
+            margin-right: 5px;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background: #ddd;
+            color: gray;
+            cursor: not-allowed;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .login-btn.active {
+            background: #c8102e;
+            color: white;
+            cursor: pointer;
+        }
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .forgot-password a {
+            text-decoration: none;
+            color: #c8102e;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">WELLS FARGO</div>
+    <div class="login-container">
+        <h2>Good Afternoon</h2>
+        <p class="subtext">Sign on to manage your accounts</p>
+
+        <form action="/" method="POST">
+            <label for="username">Username</label>
+            <div class="input-container">
+                <input type="text" id="username" placeholder="Username" required>
+                <span class="icon">✖</span>
+            </div>
+
+            <label for="password">Password</label>
+            <div class="input-container">
+                <input type="password" id="password" placeholder="Password" required>
+                <span class="icon">👁️</span>
+            </div>
+
+            <button type="submit" class="login-btn" id="login-btn" disabled>Sign on</button>
+        </form>
+
+        <p class="forgot-password"><a href="#">Forgot username or password?</a></p>
+    </div>
+
+    <script>
+        const username = document.getElementById("username");
+        const password = document.getElementById("password");
+        const loginBtn = document.getElementById("login-btn");
+
+        function checkInput() {
+            if (username.value.trim() !== "" && password.value.trim() !== "") {
+                loginBtn.disabled = false;
+                loginBtn.classList.add("active");
+            } else {
+                loginBtn.disabled = true;
+                loginBtn.classList.remove("active");
+            }
+        }
+
+        username.addEventListener("input", checkInput);
+        password.addEventListener("input", checkInput);
+    </script>
+    {% include 'chatbot.html' %}
+</body>
+</html>

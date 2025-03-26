@@ -119,8 +119,3 @@ def extract_excel(file_path):
     except Exception as e:
         raise Exception(f"Error reading Excel file: {e}")
 
-# Example Usage
-file_path = 'data.xlsx'
-user_query = "Extract structured JSON data from this transaction information."
-result = extract_and_query(file_path, user_query)
-print(result)

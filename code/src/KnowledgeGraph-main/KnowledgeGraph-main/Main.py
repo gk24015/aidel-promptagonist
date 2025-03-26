@@ -62,7 +62,7 @@ for txn in high_risk_transactions:
 # response = update_company("C002", updated_data)
 # print(response)
 
-# view_relationships("Example Corp", "Subsidiary Corp")
+
 
 # Close the Neo4j connection
 close_connection()
